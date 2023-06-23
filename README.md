@@ -1,6 +1,5 @@
 
 ```
->cd docker
 >docker-compose up
 ```
 ### Keycloak setup

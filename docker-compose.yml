@@ -84,48 +84,6 @@ services:
       - "5672:5672"
     restart: on-failure
     hostname: rabbitmq-merlot
-  
-  aaamorchestrator:
-    container_name: "aaam-orchestrator"
-    build:
-      context: ~/merlotMPO/aaam-orchestrator
-      dockerfile: Dockerfile
-    environment:
-      KEYCLOAK_BASEURI: "http://key-server:8080"
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI: "http://key-server:8080/realms/POC1"
-    ports:
-      - "8083:8083"
-    restart: on-failure
-    extra_hosts:
-      - "key-server:host-gateway"
-      - "localhost:host-gateway"
-
-  organizationsorchestrator:
-    container_name: "organizations-orchestrator"
-    build:
-      context: ~/merlotMPO/organisations-orchestrator
-      dockerfile: Dockerfile
-    environment:
-      KEYCLOAK_BASEURI: "http://key-server:8080"
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUERURI: "http://key-server:8080/realms/POC1"
-      KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
-    ports:
-      - "8082:8082"
-    restart: on-failure
-    extra_hosts:
-      - "key-server:host-gateway"
-      - "localhost:host-gateway"
-
-  sdcreationwizardapi:
-    container_name: "sd-creation-wizard-api_merlot"
-    build:
-      context: ~/merlotMPO/sd-creation-wizard-api
-      dockerfile: Dockerfile
-    environment:
-      SERVER_PORT: "8085"
-    ports:
-      - "8085:8085"
-    restart: on-failure
 
 
 networks:

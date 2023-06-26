@@ -35,7 +35,9 @@ services:
 
   server:
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/gxfs-catalog:latest
+    build:
+      context: ~/gxfs/fc-service/fc-service-server
+      dockerfile: Dockerfile
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -45,8 +47,6 @@ services:
       GRAPHSTORE_URI: "${GRAPH_STORE_URI}"
       GRAPHSTORE_USER: "${GRAPH_STORE_USER}"
       GRAPHSTORE_PASSWORD: "${GRAPH_STORE_PASSWORD}"
-      FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
-      FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
     ports:
       - "8081:8081"
     networks:

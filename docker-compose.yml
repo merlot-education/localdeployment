@@ -1,6 +1,19 @@
 version: '3.7'
 
 services:
+  vault:
+    container_name: "vault"
+    image: vault:1.9.7
+    restart: on-failure
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_ROOT_TOKEN}
+    expose:
+      - "8200"
+    ports:
+      - "8200:8200"
+    networks:
+      - "gaia-x"
+    
   postgres:
     container_name: "postgres_merlot"
     image: postgres:latest

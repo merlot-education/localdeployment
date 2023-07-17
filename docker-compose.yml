@@ -135,6 +135,7 @@ services:
       dockerfile: Dockerfile
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+      KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
     network_mode: "host"  
     volumes:
       - ./docker_data/serviceoffering-orchestrator/data:/data
@@ -144,6 +145,8 @@ services:
     build:
       context: ../organisations-orchestrator
       dockerfile: Dockerfile
+    environment:
+      KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
     network_mode: "host"  
  
   aaam-orchestrator:

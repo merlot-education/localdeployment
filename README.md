@@ -1,3 +1,9 @@
+### Preparation
+```
+> mkdir docker_data
+> chmod 777 docker_data
+```
+
 ### Run docker compose
 ```
 >docker-compose up

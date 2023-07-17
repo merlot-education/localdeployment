@@ -6,8 +6,14 @@
 
 ### Run docker compose
 ```
->docker-compose up
+> docker-compose up
 ```
+If you want to debug a specific service (e.g. by running it locally on the host system), you start docker compose up with all the services listed except the specific service to debug.
+For example if you wanted to leave out the contract-orchestrator, you would use 
+```
+> docker-compose up vault postgres neo4j server keycloak rabbitmq sd-creation-wizard-api serviceoffering-orchestrator organisations-orchestrator aaam-orchestrator marketplace
+```
+
 ### Keycloak setup
 
 When all components started you should setup Keycloak which is used as Identity and Access Management layer in the project. Add keycloak host to your local `hosts` file:

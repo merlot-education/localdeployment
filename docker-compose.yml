@@ -21,12 +21,15 @@ services:
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
+      PGDATA: /var/lib/postgresql/data/pgdata
     expose:
       - "5432"
     ports:
       - "5432:5432"
     networks:
       - "gaia-x"
+    volumes:
+      - ./docker_data/postgres/data:/var/lib/postgresql/data
 
   neo4j:
     container_name: "neo4j_merlot"
@@ -45,6 +48,8 @@ services:
       - "gaia-x"
     restart: on-failure
     command: neo4j
+    volumes:
+      - ./docker_data/neo4j/data:/data
 
   server:
     container_name: "fc-server_merlot"
@@ -85,6 +90,8 @@ services:
       [
           'start-dev --auto-build'
       ]
+    volumes:
+      - ./docker_data/keycloak/data:/opt/keycloak/data
   
   rabbitmq:
     container_name: "rabbitmq_merlot"
@@ -95,8 +102,71 @@ services:
     ports:
       - "9090:15672"
       - "5672:5672"
+    networks:
+      - "gaia-x"
     restart: on-failure
     hostname: rabbitmq-merlot
+
+  sd-creation-wizard-api:
+    container_name: "sd-creation-wizard-api"
+    build:
+      context: ../sd-creation-wizard-api
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8080"
+    networks:
+      - "gaia-x"
+   
+  contract-orchestrator:
+    container_name: "contract-orchestrator"
+    build:
+      context: ../contract-orchestrator
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+    ports:
+      - "8086:8086"
+    networks:
+      - "gaia-x"
+    volumes:
+      - ./docker_data/contract-orchestrator/data:/data
+
+  serviceoffering-orchestrator:
+    container_name: "serviceoffering-orchestrator"
+    build:
+      context: ../serviceoffering-orchestrator
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+    ports:
+      - "8084:8084"
+    networks:
+      - "gaia-x"
+    volumes:
+      - ./docker_data/serviceoffering-orchestrator/data:/data
+
+  organisations-orchestrator:
+    container_name: "organisations-orchestrator"
+    build:
+      context: ../organisations-orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - "gaia-x"
+ 
+  aaam-orchestrator:
+    container_name: "aaam-orchestrator"
+    build:
+      context: ../aaam-orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    networks:
+      - "gaia-x"
+    
+   
+    
 
 
 networks:

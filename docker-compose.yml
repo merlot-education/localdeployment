@@ -13,6 +13,9 @@ services:
       - "8200:8200"
     networks:
       - "gaia-x"
+    volumes:
+      - ./docker_data/vault/file:/vault/file
+      - ./docker_data/vault/logs:/vault/logs
     
   postgres:
     container_name: "postgres_merlot"
@@ -50,6 +53,7 @@ services:
     command: neo4j
     volumes:
       - ./docker_data/neo4j/data:/data
+      - ./docker_data/neo4j/logs:/logs
 
   server:
     container_name: "fc-server_merlot"
@@ -106,6 +110,8 @@ services:
       - "gaia-x"
     restart: on-failure
     hostname: rabbitmq-merlot
+    volumes:
+      - ./docker_data/rabbitmq:/var/lib/rabbitmq
 
   sd-creation-wizard-api:
     container_name: "sd-creation-wizard-api"

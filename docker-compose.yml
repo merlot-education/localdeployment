@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   vault:
+    user: "${UID}:${GID}"
     container_name: "vault"
     image: vault:1.9.7
     restart: on-failure
@@ -18,6 +19,7 @@ services:
       - ./docker_data/vault/logs:/vault/logs
     
   postgres:
+    user: "${UID}:${GID}"
     container_name: "postgres_merlot"
     image: postgres:latest
     restart: on-failure
@@ -35,6 +37,7 @@ services:
       - ./docker_data/postgres/data:/var/lib/postgresql/data
 
   neo4j:
+    user: "${UID}:${GID}"
     container_name: "neo4j_merlot"
     image: neo4j:4.4.12
     environment:
@@ -56,6 +59,7 @@ services:
       - ./docker_data/neo4j/logs:/logs
 
   server:
+    user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
     image: ghcr.io/merlot-education/gxfs-catalog:latest
     environment:
@@ -82,6 +86,7 @@ services:
       - neo4j
 
   keycloak:
+    user: "${UID}:${GID}"
     container_name: "keycloak_merlot"
     environment:
       KEYCLOAK_ADMIN: "admin"
@@ -98,6 +103,7 @@ services:
       - ./docker_data/keycloak/data:/opt/keycloak/data
   
   rabbitmq:
+    user: "${UID}:${GID}"
     container_name: "rabbitmq_merlot"
     image: rabbitmq:3-management
     environment:
@@ -114,6 +120,7 @@ services:
       - ./docker_data/rabbitmq:/var/lib/rabbitmq
 
   sd-creation-wizard-api:
+    user: "${UID}:${GID}"
     container_name: "sd-creation-wizard-api"
     build:
       context: ../sd-creation-wizard-api
@@ -124,6 +131,7 @@ services:
       - "gaia-x"
    
   contract-orchestrator:
+    user: "${UID}:${GID}"
     container_name: "contract-orchestrator"
     build:
       context: ../contract-orchestrator
@@ -135,6 +143,7 @@ services:
       - ./docker_data/contract-orchestrator/data:/data
 
   serviceoffering-orchestrator:
+    user: "${UID}:${GID}"
     container_name: "serviceoffering-orchestrator"
     build:
       context: ../serviceoffering-orchestrator
@@ -147,6 +156,7 @@ services:
       - ./docker_data/serviceoffering-orchestrator/data:/data
 
   organisations-orchestrator:
+    user: "${UID}:${GID}"
     container_name: "organisations-orchestrator"
     build:
       context: ../organisations-orchestrator
@@ -156,6 +166,7 @@ services:
     network_mode: "host"  
  
   aaam-orchestrator:
+    user: "${UID}:${GID}"
     container_name: "aaam-orchestrator"
     build:
       context: ../aaam-orchestrator
@@ -163,6 +174,7 @@ services:
     network_mode: "host"  
     
   marketplace:
+    user: "${UID}:${GID}"
     container_name: "marketplace"
     build:
       context: ../marketplace

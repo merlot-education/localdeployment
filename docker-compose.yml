@@ -87,7 +87,7 @@ services:
       neo4j:
         condition: service_healthy
       keycloak:
-        condition: service_completed_successfully
+        condition: service_healthy
 
   keycloak:
     user: "${UID}:${GID}"
@@ -101,7 +101,7 @@ services:
     restart: on-failure
     command:
       [
-          'start-dev --import-realm'
+          'start-dev --import-realm --health-enabled=true'
       ]
     volumes:
       - ./docker_data/keycloak/data:/opt/keycloak/data
@@ -147,7 +147,7 @@ services:
       - ./docker_data/contract-orchestrator/data:/data
     depends_on:
       keycloak:
-        condition: service_completed_successfully
+        condition: service_healthy
 
   serviceoffering-orchestrator:
     user: "${UID}:${GID}"
@@ -163,7 +163,7 @@ services:
       - ./docker_data/serviceoffering-orchestrator/data:/data
     depends_on:
       keycloak:
-        condition: service_completed_successfully
+        condition: service_healthy
 
   organisations-orchestrator:
     user: "${UID}:${GID}"
@@ -179,7 +179,7 @@ services:
       - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
       keycloak:
-        condition: service_completed_successfully
+        condition: service_healthy
  
   aaam-orchestrator:
     user: "${UID}:${GID}"
@@ -190,7 +190,7 @@ services:
     network_mode: "host"  
     depends_on:
       keycloak:
-        condition: service_completed_successfully
+        condition: service_healthy
     
   marketplace:
     user: "${UID}:${GID}"

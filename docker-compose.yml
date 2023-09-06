@@ -97,7 +97,7 @@ services:
     restart: on-failure
     command:
       [
-          'start-dev --auto-build'
+          'start-dev --import-realm'
       ]
     volumes:
       - ./docker_data/keycloak/data:/opt/keycloak/data

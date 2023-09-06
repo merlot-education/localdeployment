@@ -17,7 +17,7 @@ services:
     volumes:
       - ./docker_data/vault/file:/vault/file
       - ./docker_data/vault/logs:/vault/logs
-    
+
   postgres:
     user: "${UID}:${GID}"
     container_name: "postgres_merlot"
@@ -27,6 +27,11 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     expose:
       - "5432"
     ports:
@@ -47,6 +52,12 @@ services:
       NEO4JLABS_PLUGINS: '["apoc", "graph-data-science", "n10s"]'
       NEO4J_dbms_security_procedures_unrestricted: gds.*,apoc.*,n10s.*
       NEO4J_dbms_security_procedures_allowlist: gds.*,apoc.*,n10s.*
+    healthcheck:
+      test: wget http://localhost:7474 || exit 1
+      interval: 1s
+      timeout: 10s
+      retries: 20
+      start_period: 3s
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -101,7 +112,7 @@ services:
       - "8080:8080"
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "--head","fsS", "http://localhost:8080/health/ready"]
+      test: ["CMD", "curl", "--head", "http://localhost:8080/health/ready"]
       interval: 5s
       timeout: 2s
       retries: 15
@@ -111,7 +122,7 @@ services:
       ]
     volumes:
       - ./docker_data/keycloak/data:/opt/keycloak/data
-  
+
   rabbitmq:
     user: "${UID}:${GID}"
     container_name: "rabbitmq_merlot"
@@ -139,7 +150,7 @@ services:
       - "8085:8080"
     networks:
       - "gaia-x"
-   
+
   contract-orchestrator:
     user: "${UID}:${GID}"
     container_name: "contract-orchestrator"
@@ -148,7 +159,7 @@ services:
       dockerfile: Dockerfile
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-    network_mode: "host"  
+    network_mode: "host"
     volumes:
       - ./docker_data/contract-orchestrator/data:/data
     depends_on:
@@ -164,7 +175,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
-    network_mode: "host"  
+    network_mode: "host"
     volumes:
       - ./docker_data/serviceoffering-orchestrator/data:/data
     depends_on:
@@ -180,24 +191,24 @@ services:
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
-    network_mode: "host"  
+    network_mode: "host"
     volumes:
       - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
       keycloak:
         condition: service_healthy
- 
+
   aaam-orchestrator:
     user: "${UID}:${GID}"
     container_name: "aaam-orchestrator"
     build:
       context: ../aaam-orchestrator
       dockerfile: Dockerfile
-    network_mode: "host"  
+    network_mode: "host"
     depends_on:
       keycloak:
         condition: service_healthy
-    
+
   marketplace:
     user: "${UID}:${GID}"
     container_name: "marketplace"

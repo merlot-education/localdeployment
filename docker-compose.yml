@@ -95,10 +95,16 @@ services:
     environment:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
+      KC_HEALTH_ENABLED: true
     image: "quay.io/keycloak/keycloak:20.0.5"
     ports:
       - "8080:8080"
     restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "--head","fsS", "http://localhost:8080/health/ready"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
     command:
       [
           'start-dev --import-realm --health-enabled=true'

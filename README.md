@@ -30,4 +30,4 @@ When all components started you should setup Keycloak which is used as Identity 
 ```
 127.0.0.1	key-server
 ```
-Restart docker compose to pick up changes applied at the second step above.
+Restart docker compose to pick up changes.

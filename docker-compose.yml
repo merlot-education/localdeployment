@@ -21,7 +21,7 @@ services:
   postgres:
     user: "${UID}:${GID}"
     container_name: "postgres_merlot"
-    image: postgres:latest
+    image: postgres:15
     restart: on-failure
     environment:
       POSTGRES_USER: ${DB_USER}

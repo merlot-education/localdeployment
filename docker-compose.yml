@@ -157,6 +157,8 @@ services:
     build:
       context: ../contract-orchestrator
       dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
     network_mode: "host"
@@ -172,6 +174,8 @@ services:
     build:
       context: ../serviceoffering-orchestrator
       dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
@@ -188,6 +192,8 @@ services:
     build:
       context: ../organisations-orchestrator
       dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
@@ -204,6 +210,8 @@ services:
     build:
       context: ../aaam-orchestrator
       dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
     network_mode: "host"
     depends_on:
       keycloak:
@@ -215,6 +223,8 @@ services:
     build:
       context: ../marketplace
       dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
     ports:
       - "4200:80"
     networks:
@@ -224,3 +234,7 @@ services:
 networks:
   gaia-x:
     driver: "bridge"
+
+secrets:
+  GIT_AUTH_TOKEN:
+    file: "secrets/git_auth_token.txt"

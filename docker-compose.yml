@@ -185,7 +185,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       SPRING_RABBITMQ_HOST: "rabbitmq"
       ORGANIZATIONSORCHESTRATOR_BASEURI: "http://organisations-orchestrator:8082/api"
-      SERVICEOFFERING_BASEURI: "http://serviceoffering-orchestrator:8084/api"
+      SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://serviceoffering-orchestrator:8084/api"
     networks:
       - "gaia-x"
     ports:

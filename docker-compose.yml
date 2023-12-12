@@ -60,12 +60,12 @@ services:
     user: "${UID}:${GID}"
     container_name: "neo4j_merlot"
     hostname: neo4j
-    image: neo4j:4.4.12
+    image: neo4j:4.4.28
     environment:
       NEO4J_AUTH: "${GRAPH_STORE_USER}/${GRAPH_STORE_PASSWORD}"
       NEO4J_dbms_connector_http_listen__address: :7474
       NEO4J_dbms_connector_bolt_listen__address: :7687
-      NEO4JLABS_PLUGINS: '["apoc", "graph-data-science", "n10s"]'
+      NEO4J_PLUGINS: '["apoc", "graph-data-science"]'
       NEO4J_dbms_security_procedures_unrestricted: gds.*,apoc.*,n10s.*
       NEO4J_dbms_security_procedures_allowlist: gds.*,apoc.*,n10s.*
     healthcheck:
@@ -84,6 +84,7 @@ services:
     volumes:
       - ./docker_data/neo4j/data:/data
       - ./docker_data/neo4j/logs:/logs
+      - ./docker_data/neo4j/plugins:/plugins
 
   server:
     user: "${UID}:${GID}"

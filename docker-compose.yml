@@ -4,7 +4,6 @@ services:
   vault:
     user: "${UID}:${GID}"
     container_name: "vault"
-    hostname: vault
     image: vault:1.9.7
     restart: on-failure
     environment:
@@ -21,7 +20,6 @@ services:
       
   pgadmin:
     container_name: pgadmin
-    hostname: pgadmin
     image: dpage/pgadmin4
     restart: on-failure
     environment:
@@ -89,8 +87,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    hostname: fc-server
-    image: ghcr.io/merlot-education/gxfs-catalog:latest
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:f3867b4
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -107,6 +104,7 @@ services:
     networks:
       - "gaia-x"
     extra_hosts:
+      - "key-server:host-gateway"
       - "localhost:127.0.0.1"
     restart: on-failure
     depends_on:
@@ -120,7 +118,6 @@ services:
   keycloak:
     user: "${UID}:${GID}"
     container_name: "keycloak_merlot"
-    hostname: key-server
     environment:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
@@ -147,7 +144,6 @@ services:
   rabbitmq:
     user: "${UID}:${GID}"
     container_name: "rabbitmq_merlot"
-    hostname: rabbitmq
     image: rabbitmq:3-management
     environment:
       RABBITMQ_DEFAULT_USER: "admin"
@@ -164,10 +160,7 @@ services:
   sd-creation-wizard-api:
     user: "${UID}:${GID}"
     container_name: "sd-creation-wizard-api"
-    hostname: wizard
-    build:
-      context: ../sd-creation-wizard-api
-      dockerfile: Dockerfile
+    image: ghcr.io/merlot-education/catalog-shapes/sd-creation-wizard-api:f3867b4
     networks:
       - "gaia-x"
     ports:
@@ -176,7 +169,6 @@ services:
   contract-orchestrator:
     user: "${UID}:${GID}"
     container_name: "contract-orchestrator"
-    hostname: contract-orchestrator
     build:
       context: ../contract-orchestrator
       dockerfile: Dockerfile
@@ -184,23 +176,19 @@ services:
         - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-      SPRING_RABBITMQ_HOST: "rabbitmq"
-      ORGANIZATIONSORCHESTRATOR_BASEURI: "http://organisations-orchestrator:8082/api"
-      SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://serviceoffering-orchestrator:8084/api"
-    networks:
-      - "gaia-x"
-    ports:
-      - "8086:8086"
+      SPRING_RABBITMQ_HOST: "localhost"
+      ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
+      SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://localhost:8084/api"
     volumes:
       - ./docker_data/contract-orchestrator/data:/data
     depends_on:
       keycloak:
         condition: service_healthy
+    network_mode: "host"
 
   serviceoffering-orchestrator:
     user: "${UID}:${GID}"
     container_name: "serviceoffering-orchestrator"
-    hostname: serviceoffering-orchestrator
     build:
       context: ../serviceoffering-orchestrator
       dockerfile: Dockerfile
@@ -208,25 +196,21 @@ services:
         - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-      SPRING_RABBITMQ_HOST: "rabbitmq"
-      GXFSCATALOG_BASEURI: "http://fc-server:8081"
-      GXFSWIZARD_BASEURI: "http://wizard:8080"
-      ORGANIZATIONSORCHESTRATOR_BASEURI: "http://organisations-orchestrator:8082/api"
+      SPRING_RABBITMQ_HOST: "localhost"
+      GXFSCATALOG_BASEURI: "http://localhost:8081"
+      GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
+      ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
-    networks:
-      - "gaia-x"
-    ports:
-      - "8084:8084"
     volumes:
       - ./docker_data/serviceoffering-orchestrator/data:/data
     depends_on:
       keycloak:
         condition: service_healthy
+    network_mode: "host"
 
   organisations-orchestrator:
     user: "${UID}:${GID}"
     container_name: "organisations-orchestrator"
-    hostname: organisations-orchestrator
     build:
       context: ../organisations-orchestrator
       dockerfile: Dockerfile
@@ -234,36 +218,29 @@ services:
         - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-      SPRING_RABBITMQ_HOST: "rabbitmq"
-      GXFSCATALOG_BASEURI: "http://fc-server:8081"
-      GXFSWIZARD_BASEURI: "http://wizard:8080"
+      SPRING_RABBITMQ_HOST: "localhost"
+      GXFSCATALOG_BASEURI: "http://localhost:8081"
+      GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
-    networks:
-      - "gaia-x"
-    ports:
-      - "8082:8082"
     volumes:
       - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
       keycloak:
         condition: service_healthy
+    network_mode: "host"
 
   aaam-orchestrator:
     user: "${UID}:${GID}"
     container_name: "aaam-orchestrator"
-    hostname: aaam-orchestrator
     build:
       context: ../aaam-orchestrator
       dockerfile: Dockerfile
       secrets:
         - "GIT_AUTH_TOKEN"
-    networks:
-      - "gaia-x"
-    ports:
-      - "8083:8083"
     depends_on:
       keycloak:
         condition: service_healthy
+    network_mode: "host"
 
   marketplace:
     user: "${UID}:${GID}"

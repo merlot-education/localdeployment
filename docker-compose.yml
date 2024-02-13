@@ -201,6 +201,9 @@ services:
       GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
       ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
+      GXFSCATALOG_PRIVATEKEYPATH: ""
+      GXFSCATALOG_CERTPATH: ""
+      GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
     volumes:
       - ./docker_data/serviceoffering-orchestrator/data:/data
     depends_on:
@@ -222,10 +225,15 @@ services:
       GXFSCATALOG_BASEURI: "http://localhost:8081"
       GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
       KEYCLOAK_CLIENTSECRET: "${FC_CLIENT_SECRET}"
+      GXFSCATALOG_PRIVATEKEYPATH: ""
+      GXFSCATALOG_CERTPATH: ""
+      GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
     volumes:
       - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
       keycloak:
+        condition: service_healthy
+      server:
         condition: service_healthy
     network_mode: "host"
 

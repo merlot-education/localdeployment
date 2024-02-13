@@ -270,7 +270,7 @@ services:
     networks:
       - "gaia-x"
     ports:
-      - "5154:5154"
+      - "5154:8080"
 
 networks:
   gaia-x:

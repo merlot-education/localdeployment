@@ -234,7 +234,7 @@ services:
       keycloak:
         condition: service_healthy
       server:
-        condition: service_healthy
+        condition: service_started
     network_mode: "host"
 
   aaam-orchestrator:
@@ -263,6 +263,14 @@ services:
     networks:
       - "gaia-x"
 
+  pdfservice:
+    user: "${UID}:${GID}"
+    container_name: "pdfservice"
+    image: ghcr.io/merlot-education/pdfservice:0.1.1
+    networks:
+      - "gaia-x"
+    ports:
+      - "5154:5154"
 
 networks:
   gaia-x:

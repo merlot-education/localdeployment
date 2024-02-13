@@ -234,7 +234,7 @@ services:
       keycloak:
         condition: service_healthy
       server:
-        condition: service_healthy
+        condition: service_started
     network_mode: "host"
 
   aaam-orchestrator:

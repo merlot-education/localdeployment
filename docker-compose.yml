@@ -239,18 +239,18 @@ services:
         condition: service_started
     network_mode: "host"
 
-  #aaam-orchestrator:
-  #  user: "${UID}:${GID}"
-  #  container_name: "aaam-orchestrator"
-  #  build:
-  #    context: ../aaam-orchestrator
-  #    dockerfile: Dockerfile
-  #    secrets:
-  #      - "GIT_AUTH_TOKEN"
-  #  depends_on:
-  #    keycloak:
-  #      condition: service_healthy
-  #  network_mode: "host"
+  aaam-orchestrator:
+    user: "${UID}:${GID}"
+    container_name: "aaam-orchestrator"
+    build:
+      context: ../aaam-orchestrator
+      dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    network_mode: "host"
 
   marketplace:
     user: "${UID}:${GID}"

@@ -87,7 +87,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:f3867b4
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:afad431
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -99,13 +99,8 @@ services:
       GRAPHSTORE_PASSWORD: "${GRAPH_STORE_PASSWORD}"
       FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
       FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
-    ports:
-      - "8081:8081"
-    networks:
-      - "gaia-x"
-    extra_hosts:
-      - "key-server:host-gateway"
-      - "localhost:127.0.0.1"
+      FEDERATEDCATALOGUE_IGNORESSL: true
+    network_mode: "host"
     restart: on-failure
     depends_on:
       postgres:
@@ -264,6 +259,23 @@ services:
       - "4200:80"
     networks:
       - "gaia-x"
+
+  did-service:
+    user: "${UID}:${GID}"
+    container_name: "did-service"
+    build:
+      context: ../did-service
+      dockerfile: Dockerfile
+      secrets:
+        - "GIT_AUTH_TOKEN"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    volumes:
+      - ./docker_data/did-service/data:/data
+    network_mode: "host"
 
   pdfservice:
     user: "${UID}:${GID}"

@@ -87,7 +87,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:84fa6d2
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:916d293
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -99,6 +99,7 @@ services:
       GRAPHSTORE_PASSWORD: "${GRAPH_STORE_PASSWORD}"
       FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
       FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
+      FEDERATEDCATALOGUE_VERIFICATION_SIGNATUREVERIFIER: local
       FEDERATEDCATALOGUE_VERIFICATION_TRUSTANCHORURL: ""
       FEDERATEDCATALOGUE_IGNORESSL: true
     network_mode: "host"

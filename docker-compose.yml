@@ -242,6 +242,8 @@ services:
         - "GIT_AUTH_TOKEN"
     ports:
       - "4200:80"
+    extra_hosts:
+      - "didservice-orchestrator.merlot.svc.cluster.local:172.20.0.1"
     networks:
       - "gaia-x"
 

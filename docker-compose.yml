@@ -87,7 +87,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:afad431
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:84fa6d2
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -99,6 +99,7 @@ services:
       GRAPHSTORE_PASSWORD: "${GRAPH_STORE_PASSWORD}"
       FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
       FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
+      FEDERATEDCATALOGUE_VERIFICATION_TRUSTANCHORURL: ""
       FEDERATEDCATALOGUE_IGNORESSL: true
     network_mode: "host"
     restart: on-failure
@@ -107,8 +108,7 @@ services:
         condition: service_healthy
       neo4j:
         condition: service_healthy
-      keycloak:
-        condition: service_healthy
+
 
   keycloak:
     user: "${UID}:${GID}"
@@ -117,21 +117,15 @@ services:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KC_HEALTH_ENABLED: true
-    image: "quay.io/keycloak/keycloak:20.0.5"
+    image: "quay.io/keycloak/keycloak:23.0.7"
     ports:
       - "8080:8080"
     networks:
       - "gaia-x"
     restart: on-failure
-    healthcheck:
-      test: ["CMD", "curl", "--head", "http://localhost:8080/health/ready"]
-      interval: 5s
-      timeout: 2s
-      retries: 15
-    command:
-      [
-          'start-dev --import-realm --health-enabled=true'
-      ]
+    command: >
+      start-dev --hostname-strict-https false --hostname-strict false --proxy edge --http-enabled true --import-realm 
+      --log-level=DEBUG,io.quarkus:INFO,liquibase:INFO,org.hibernate:INFO,org.infinispan:INFO,org.keycloak.services.scheduled:INFO,org.keycloak.transaction:INFO,io.netty.buffer.PoolThreadCache:INFO,org.keycloak.models.sessions.infinispan:INFO
     volumes:
       - ./docker_data/keycloak/data:/opt/keycloak/data
       - ./docker_data/keycloak/providers:/opt/keycloak/providers
@@ -176,9 +170,6 @@ services:
       SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://localhost:8084/api"
     volumes:
       - ./docker_data/contract-orchestrator/data:/data
-    depends_on:
-      keycloak:
-        condition: service_healthy
     network_mode: "host"
 
   serviceoffering-orchestrator:
@@ -201,9 +192,6 @@ services:
       GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
     volumes:
       - ./docker_data/serviceoffering-orchestrator/data:/data
-    depends_on:
-      keycloak:
-        condition: service_healthy
     network_mode: "host"
 
   organisations-orchestrator:
@@ -228,8 +216,7 @@ services:
     volumes:
       - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
-      keycloak:
-        condition: service_healthy
+
       server:
         condition: service_started
     network_mode: "host"
@@ -242,9 +229,6 @@ services:
       dockerfile: Dockerfile
       secrets:
         - "GIT_AUTH_TOKEN"
-    depends_on:
-      keycloak:
-        condition: service_healthy
     network_mode: "host"
 
   marketplace:
@@ -270,9 +254,6 @@ services:
         - "GIT_AUTH_TOKEN"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-    depends_on:
-      keycloak:
-        condition: service_healthy
     volumes:
       - ./docker_data/did-service/data:/data
     network_mode: "host"

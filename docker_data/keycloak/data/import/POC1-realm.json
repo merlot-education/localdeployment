@@ -62,7 +62,7 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-poc1", "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#c041ea73-3ecf-3a06-a5cd-919f5cef8e54", "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#14e2471b-a276-3349-8a6e-caa941f9369b"],
+    "realmRoles" : [ "default-roles-poc1", "OrgLegRep_did:web:localhost:participant:c041ea73-3ecf-3a06-a5cd-919f5cef8e54", "OrgLegRep_did:web:localhost:participant:14e2471b-a276-3349-8a6e-caa941f9369b"],
     "notBefore" : 0,
     "groups" : [ ]
   }, {
@@ -84,14 +84,14 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ ],
-    "realmRoles" : [ "default-roles-poc1", "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#c041ea73-3ecf-3a06-a5cd-919f5cef8e54", "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#14e2471b-a276-3349-8a6e-caa941f9369b" ],
+    "realmRoles" : [ "default-roles-poc1", "OrgLegRep_did:web:localhost:participant:c041ea73-3ecf-3a06-a5cd-919f5cef8e54", "OrgLegRep_did:web:localhost:participant:14e2471b-a276-3349-8a6e-caa941f9369b" ],
     "notBefore" : 0,
     "groups" : [ ]
   } ],
   "roles" : {
     "realm" : [ {
       "id" : "7c01bdbc-1693-4744-b147-ea2df688b941",
-      "name" : "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#c041ea73-3ecf-3a06-a5cd-919f5cef8e54",
+      "name" : "OrgLegRep_did:web:localhost:participant:c041ea73-3ecf-3a06-a5cd-919f5cef8e54",
       "description" : "",
       "composite" : false,
       "clientRole" : false,
@@ -113,7 +113,7 @@
       "attributes" : { }
     }, {
       "id" : "fbb7819f-9386-47bb-9167-8de1601555a7",
-      "name" : "OrgLegRep_did:web:marketplace.dev.merlot-education.eu#14e2471b-a276-3349-8a6e-caa941f9369b",
+      "name" : "OrgLegRep_did:web:localhost:participant:14e2471b-a276-3349-8a6e-caa941f9369b",
       "description" : "",
       "composite" : false,
       "clientRole" : false,

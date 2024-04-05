@@ -1,22 +1,6 @@
 version: '3.7'
 
 services:
-  vault:
-    user: "${UID}:${GID}"
-    container_name: "vault"
-    image: vault:1.9.7
-    restart: on-failure
-    environment:
-      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_ROOT_TOKEN}
-    expose:
-      - "8200"
-    ports:
-      - "8200:8200"
-    networks:
-      - "gaia-x"
-    volumes:
-      - ./docker_data/vault/file:/vault/file
-      - ./docker_data/vault/logs:/vault/logs
       
   pgadmin:
     container_name: pgadmin
@@ -31,7 +15,7 @@ services:
       - ./initial_data/pgadmin/servers.json:/pgadmin4/servers.json:ro
     entrypoint: >
       /bin/sh -c '
-      echo "postgres:5432:postgres:postgres:postgres" > /tmp/pgpass;
+      echo "postgres:5432:*:postgres:postgres" > /tmp/pgpass;
       chmod 600 /tmp/pgpass;
       /entrypoint.sh
       '
@@ -63,7 +47,7 @@ services:
       - "gaia-x"
     volumes:
       - ./docker_data/postgres/data:/var/lib/postgresql/data
-      - ./initial_data/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./initial_data/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 
   neo4j:
     user: "${UID}:${GID}"
@@ -129,6 +113,11 @@ services:
       KEYCLOAK_ADMIN: "admin"
       KEYCLOAK_ADMIN_PASSWORD: "admin"
       KC_HEALTH_ENABLED: true
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_HOSTNAME: postgres
     image: "quay.io/keycloak/keycloak:23.0.7"
     ports:
       - "8080:8080"
@@ -139,8 +128,6 @@ services:
       start-dev --hostname-strict-https false --hostname-strict false --proxy edge --http-enabled true --import-realm 
       --log-level=DEBUG,io.quarkus:INFO,liquibase:INFO,org.hibernate:INFO,org.infinispan:INFO,org.keycloak.services.scheduled:INFO,org.keycloak.transaction:INFO,io.netty.buffer.PoolThreadCache:INFO,org.keycloak.models.sessions.infinispan:INFO
     volumes:
-      - ./docker_data/keycloak/providers:/opt/keycloak/providers
-      - ./docker_data/keycloak/data/h2:/opt/keycloak/data/h2
       - ./initial_data/keycloak/data/import:/opt/keycloak/data/import:ro
 
   rabbitmq:
@@ -177,12 +164,14 @@ services:
       secrets:
         - "GIT_AUTH_TOKEN"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/didservice
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_RABBITMQ_HOST: "localhost"
       ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
       SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://localhost:8084/api"
-    volumes:
-      - ./docker_data/contract-orchestrator/data:/data
     network_mode: "host"
 
   serviceoffering-orchestrator:
@@ -194,7 +183,11 @@ services:
       secrets:
         - "GIT_AUTH_TOKEN"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/didservice
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_RABBITMQ_HOST: "localhost"
       GXFSCATALOG_BASEURI: "http://localhost:8081"
       GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
@@ -203,8 +196,6 @@ services:
       GXFSCATALOG_PRIVATEKEYPATH: ""
       GXFSCATALOG_CERTPATH: ""
       GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
-    volumes:
-      - ./docker_data/serviceoffering-orchestrator/data:/data
     network_mode: "host"
 
   organisations-orchestrator:
@@ -216,9 +207,13 @@ services:
       secrets:
         - "GIT_AUTH_TOKEN"
     environment:
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/organisations
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
       INITDATA_ORGANISATIONS: /opt/initdata/organisations/
       INITDATA_CONNECTORS: /opt/initdata/initial-orga-connectors.json
-      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
       SPRING_RABBITMQ_HOST: "localhost"
       GXFSCATALOG_BASEURI: "http://localhost:8081"
       GXFSWIZARDAPI_BASEURI: "http://localhost:8085"
@@ -226,8 +221,6 @@ services:
       GXFSCATALOG_PRIVATEKEYPATH: ""
       GXFSCATALOG_CERTPATH: ""
       GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
-    volumes:
-      - ./docker_data/organisations-orchestrator/data:/data
     depends_on:
 
       server:
@@ -268,9 +261,11 @@ services:
       secrets:
         - "GIT_AUTH_TOKEN"
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:h2:file:/data/database.db"
-    volumes:
-      - ./docker_data/did-service/data:/data
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/didservice
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
     network_mode: "host"
 
   pdfservice:

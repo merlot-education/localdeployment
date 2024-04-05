@@ -39,7 +39,7 @@ services:
       PGDATA: /var/lib/postgresql/data/pgdata
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
-      interval: 10s
+      interval: 30s
       timeout: 5s
       retries: 50
     expose:
@@ -66,8 +66,8 @@ services:
       NEO4J_dbms_security_procedures_allowlist: gds.*,apoc.*,n10s.*
     healthcheck:
       test: wget http://localhost:7474 || exit 1
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 50
       start_period: 3s
     ports:
@@ -103,8 +103,8 @@ services:
     network_mode: "host"
     healthcheck:
       test: wget http://localhost:8081/actuator/health || exit 1
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 50
       start_period: 3s
     restart: on-failure
@@ -136,8 +136,8 @@ services:
     restart: on-failure
     healthcheck:
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
-      interval: 5s
-      timeout: 15s
+      interval: 30s
+      timeout: 30s
       retries: 50
       start_period: 3s
     command: >
@@ -164,9 +164,9 @@ services:
     restart: on-failure
     healthcheck:
       test: rabbitmq-diagnostics -q ping
-      interval: 3s
+      interval: 30s
       timeout: 30s
-      retries: 50
+      retries: 3
     volumes:
       - ./docker_data/rabbitmq:/var/lib/rabbitmq
 
@@ -319,8 +319,8 @@ services:
     network_mode: "host"
     healthcheck:
       test: wget http://localhost:8088/health || exit 1
-      interval: 10s
-      timeout: 10s
+      interval: 30s
+      timeout: 30s
       retries: 50
       start_period: 3s
     depends_on:

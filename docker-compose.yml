@@ -66,7 +66,7 @@ services:
       NEO4J_dbms_security_procedures_allowlist: gds.*,apoc.*,n10s.*
     healthcheck:
       test: wget http://localhost:7474 || exit 1
-      interval: 3s
+      interval: 10s
       timeout: 10s
       retries: 50
       start_period: 3s
@@ -103,7 +103,7 @@ services:
     network_mode: "host"
     healthcheck:
       test: wget http://localhost:8081/actuator/health || exit 1
-      interval: 3s
+      interval: 10s
       timeout: 10s
       retries: 50
       start_period: 3s
@@ -190,7 +190,7 @@ services:
     environment:
       SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
       SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/didservice
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/contract
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_RABBITMQ_HOST: "localhost"
@@ -216,7 +216,7 @@ services:
     environment:
       SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
       SPRING_JPA_DATABASEPLATFORM: org.hibernate.dialect.PostgreSQLDialect
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/didservice
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/serviceoffering
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_RABBITMQ_HOST: "localhost"
@@ -319,7 +319,7 @@ services:
     network_mode: "host"
     healthcheck:
       test: wget http://localhost:8088/health || exit 1
-      interval: 3s
+      interval: 10s
       timeout: 10s
       retries: 50
       start_period: 3s

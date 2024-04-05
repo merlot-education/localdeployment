@@ -12,3 +12,6 @@ GRANT ALL PRIVILEGES ON DATABASE keycloak TO postgres;
 
 CREATE DATABASE organisations;
 GRANT ALL PRIVILEGES ON DATABASE organisations TO postgres;
+
+CREATE DATABASE serviceoffering;
+GRANT ALL PRIVILEGES ON DATABASE serviceoffering TO postgres;

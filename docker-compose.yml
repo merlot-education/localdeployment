@@ -82,7 +82,7 @@ services:
     volumes:
       - ./docker_data/neo4j/data:/data
       - ./docker_data/neo4j/logs:/logs
-      - ./initial_data/neo4j/plugins/n10s.jar:/plugins/n10s.jar:ro
+      - ./initial_data/neo4j/plugins/n10s.jar:/plugins/n10s.jar  # kept writable as neo4j must change owner
 
   server:
     user: "${UID}:${GID}"
@@ -325,6 +325,25 @@ services:
     volumes:
       - ./initial_data/nginx/reverse_proxy.conf:/etc/nginx/nginx.conf:ro
     network_mode: "host"
+
+  omejdn-server:
+    user: "${UID}:${GID}"
+    container_name: "omejdn-server"
+    image: ghcr.io/merlot-education/omejdn-plugins:0.0.1-f2a0459
+    environment:
+      OMEJDN_ISSUER: "http://localhost:4567/auth"
+      OMEJDN_FRONT_URL: "http://localhost:4567/auth"
+      OMEJDN_OPENID: true
+      OMEJDN_ENVIRONMENT: "development"
+      OMEJDN_ACCEPT_AUDIENCE: idsc:IDS_CONNECTORS_ALL
+      OMEJDN_DEFAULT_AUDIENCE: idsc:IDS_CONNECTORS_ALL
+      OMEJDN_PLUGINS: plugins_config/plugins.yml
+    volumes:
+      - ./docker_data/omejdn/config:/opt/config
+      - ./initial_data/omejdn/plugins_config/plugins.yml:/opt/plugins_config/plugins.yml:ro
+      - ./docker_data/omejdn/keys:/opt/keys
+    network_mode: "host"
+    restart: on-failure
 
 networks:
   gaia-x:

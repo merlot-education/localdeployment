@@ -82,7 +82,7 @@ services:
     volumes:
       - ./docker_data/neo4j/data:/data
       - ./docker_data/neo4j/logs:/logs
-      - ./docker_data/neo4j/plugins:/plugins
+      - ./initial_data/neo4j/plugins/n10s.jar:/plugins/n10s.jar:ro
 
   server:
     user: "${UID}:${GID}"
@@ -128,8 +128,9 @@ services:
       start-dev --hostname-strict-https false --hostname-strict false --proxy edge --http-enabled true --import-realm 
       --log-level=DEBUG,io.quarkus:INFO,liquibase:INFO,org.hibernate:INFO,org.infinispan:INFO,org.keycloak.services.scheduled:INFO,org.keycloak.transaction:INFO,io.netty.buffer.PoolThreadCache:INFO,org.keycloak.models.sessions.infinispan:INFO
     volumes:
-      - ./docker_data/keycloak/data:/opt/keycloak/data
       - ./docker_data/keycloak/providers:/opt/keycloak/providers
+      - ./docker_data/keycloak/data/h2:/opt/keycloak/data/h2
+      - ./initial_data/keycloak/data/import:/opt/keycloak/data/import:ro
 
   rabbitmq:
     user: "${UID}:${GID}"
@@ -322,7 +323,7 @@ services:
     image: nginx:latest
     container_name: nginx
     volumes:
-      - ./docker_data/nginx/reverse_proxy.conf:/etc/nginx/nginx.conf
+      - ./initial_data/nginx/reverse_proxy.conf:/etc/nginx/nginx.conf:ro
     network_mode: "host"
 
 networks:

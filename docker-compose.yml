@@ -23,6 +23,9 @@ services:
       - "5050:80"
     networks:
       - "gaia-x"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   postgres:
     user: "${UID}:${GID}"
@@ -38,7 +41,7 @@ services:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 50
     expose:
       - "5432"
     ports:
@@ -63,9 +66,9 @@ services:
       NEO4J_dbms_security_procedures_allowlist: gds.*,apoc.*,n10s.*
     healthcheck:
       test: wget http://localhost:7474 || exit 1
-      interval: 1s
+      interval: 3s
       timeout: 10s
-      retries: 20
+      retries: 50
       start_period: 3s
     ports:
       - "7474:7474"
@@ -98,11 +101,19 @@ services:
       FEDERATEDCATALOGUE_VERIFICATION_TRUSTANCHORURL: ""
       FEDERATEDCATALOGUE_IGNORESSL: true
     network_mode: "host"
+    healthcheck:
+      test: wget http://localhost:8081/actuator/health || exit 1
+      interval: 3s
+      timeout: 10s
+      retries: 50
+      start_period: 3s
     restart: on-failure
     depends_on:
       postgres:
         condition: service_healthy
       neo4j:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
 
 
@@ -124,11 +135,20 @@ services:
     networks:
       - "gaia-x"
     restart: on-failure
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+      interval: 5s
+      timeout: 15s
+      retries: 50
+      start_period: 3s
     command: >
       start-dev --hostname-strict-https false --hostname-strict false --proxy edge --http-enabled true --import-realm 
       --log-level=DEBUG,io.quarkus:INFO,liquibase:INFO,org.hibernate:INFO,org.infinispan:INFO,org.keycloak.services.scheduled:INFO,org.keycloak.transaction:INFO,io.netty.buffer.PoolThreadCache:INFO,org.keycloak.models.sessions.infinispan:INFO
     volumes:
       - ./initial_data/keycloak/data/import:/opt/keycloak/data/import:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   rabbitmq:
     user: "${UID}:${GID}"
@@ -143,6 +163,11 @@ services:
     networks:
       - "gaia-x"
     restart: on-failure
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 3s
+      timeout: 30s
+      retries: 50
     volumes:
       - ./docker_data/rabbitmq:/var/lib/rabbitmq
 
@@ -173,6 +198,13 @@ services:
       ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
       SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://localhost:8084/api"
     network_mode: "host"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   serviceoffering-orchestrator:
     user: "${UID}:${GID}"
@@ -197,6 +229,15 @@ services:
       GXFSCATALOG_CERTPATH: ""
       GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
     network_mode: "host"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      server:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   organisations-orchestrator:
     user: "${UID}:${GID}"
@@ -222,9 +263,16 @@ services:
       GXFSCATALOG_CERTPATH: ""
       GXFSCATALOG_VERIFICATIONMETHOD: "did:web:compliance.lab.gaia-x.eu"
     depends_on:
-
+      postgres:
+        condition: service_healthy
       server:
-        condition: service_started
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+      did-service:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     network_mode: "host"
 
   aaam-orchestrator:
@@ -236,6 +284,9 @@ services:
       secrets:
         - "GIT_AUTH_TOKEN"
     network_mode: "host"
+    depends_on:
+      keycloak:
+        condition: service_healthy
 
   marketplace:
     user: "${UID}:${GID}"
@@ -267,6 +318,17 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
     network_mode: "host"
+    healthcheck:
+      test: wget http://localhost:8088/health || exit 1
+      interval: 3s
+      timeout: 10s
+      retries: 50
+      start_period: 3s
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   pdfservice:
     user: "${UID}:${GID}"

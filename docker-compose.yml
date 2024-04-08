@@ -390,8 +390,14 @@ services:
       - ./docker_data/omejdn/config:/opt/config
       - ./initial_data/omejdn/plugins_config/plugins.yml:/opt/plugins_config/plugins.yml:ro
       - ./docker_data/omejdn/keys:/opt/keys
+      - ./initial_data/omejdn/config/:/opt/initial_config/:ro
       - ./initial_data/omejdn/keys/omejdn:/opt/keys/omejdn:ro
       - ./initial_data/omejdn/keys/omejdn.cert:/opt/keys/omejdn.cert:ro
+    entrypoint: >
+      /bin/bash -c '
+      cp -n /opt/initial_config/initial_clients.yml /opt/config/clients.yml;
+      ruby omejdn.rb
+      '
     network_mode: "host"
     restart: on-failure
 

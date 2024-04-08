@@ -385,7 +385,7 @@ services:
   omejdn-server:
     user: "${UID}:${GID}"
     container_name: "omejdn-server"
-    image: ghcr.io/merlot-education/omejdn-plugins:0.0.1-f2a0459
+    image: ghcr.io/merlot-education/omejdn-plugins:0.0.1-70cb288
     environment:
       OMEJDN_ISSUER: "http://localhost:4567"
       OMEJDN_FRONT_URL: "http://localhost:4567"

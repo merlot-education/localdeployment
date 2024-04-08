@@ -197,6 +197,7 @@ services:
       ORGANIZATIONSORCHESTRATOR_BASEURI: "http://localhost:8082/api"
       SERVICEOFFERINGORCHESTRATOR_BASEURI: "http://localhost:8084/api"
     network_mode: "host"
+    env_file: "secrets/s3_storage_secrets.txt"
     depends_on:
       postgres:
         condition: service_healthy
@@ -345,21 +346,11 @@ services:
       dockerfile: Dockerfile
       secrets:
         - "GIT_AUTH_TOKEN"
-    environment:
-      WEB_HTTP_PORT: 29191
-      WEB_HTTP_PATH: /api
-      WEB_HTTP_MANAGEMENT_PORT: 29193
-      WEB_HTTP_MANAGEMENT_PATH: /management
-      WEB_HTTP_PROTOCOL_PORT: 29194
-      WEB_HTTP_PROTOCOL_PATH: /protocol
-      WEB_HTTP_PUBLIC_PORT: 29291
-      WEB_HTTP_PUBLIC_PATH: /public
-      WEB_HTTP_CONTROL_PORT: 29192
-      WEB_HTTP_CONTROL_PATH: /control
-      EDC_PARTICIPANT_ID: edc1
-      EDC_DSP_CALLBACK_ADDRESS: http://localhost:8123/edc1/protocol
-      EDC_API_AUTH_KEY: 1234
     env_file: "secrets/edc_ionos_secrets.txt"
+    volumes:
+      - ./initial_data/edc/edc1.properties:/opt/dataspaceconnector-configuration.properties:ro
+      - ./initial_data/edc/vault.properties:/opt/vault.properties:ro
+      - ./initial_data/edc/edc1.pfx:/opt/edc.pfx:ro
     network_mode: "host"
 
   edc2:
@@ -369,21 +360,11 @@ services:
       dockerfile: Dockerfile
       secrets:
         - "GIT_AUTH_TOKEN"
-    environment:
-      WEB_HTTP_PORT: 19191
-      WEB_HTTP_PATH: /api
-      WEB_HTTP_MANAGEMENT_PORT: 19193
-      WEB_HTTP_MANAGEMENT_PATH: /management
-      WEB_HTTP_PROTOCOL_PORT: 19194
-      WEB_HTTP_PROTOCOL_PATH: /protocol
-      WEB_HTTP_PUBLIC_PORT: 19291
-      WEB_HTTP_PUBLIC_PATH: /public
-      WEB_HTTP_CONTROL_PORT: 19192
-      WEB_HTTP_CONTROL_PATH: /control
-      EDC_PARTICIPANT_ID: edc2
-      EDC_DSP_CALLBACK_ADDRESS: http://localhost:8123/edc2/protocol
-      EDC_API_AUTH_KEY: 5678
     env_file: "secrets/edc_ionos_secrets.txt"
+    volumes:
+      - ./initial_data/edc/edc2.properties:/opt/dataspaceconnector-configuration.properties:ro
+      - ./initial_data/edc/vault.properties:/opt/vault.properties:ro
+      - ./initial_data/edc/edc2.pfx:/opt/edc.pfx:ro
     network_mode: "host"
 
   nginx:
@@ -398,8 +379,8 @@ services:
     container_name: "omejdn-server"
     image: ghcr.io/merlot-education/omejdn-plugins:0.0.1-f2a0459
     environment:
-      OMEJDN_ISSUER: "http://localhost:4567/auth"
-      OMEJDN_FRONT_URL: "http://localhost:4567/auth"
+      OMEJDN_ISSUER: "http://localhost:4567"
+      OMEJDN_FRONT_URL: "http://localhost:4567"
       OMEJDN_OPENID: true
       OMEJDN_ENVIRONMENT: "development"
       OMEJDN_ACCEPT_AUDIENCE: idsc:IDS_CONNECTORS_ALL
@@ -409,6 +390,8 @@ services:
       - ./docker_data/omejdn/config:/opt/config
       - ./initial_data/omejdn/plugins_config/plugins.yml:/opt/plugins_config/plugins.yml:ro
       - ./docker_data/omejdn/keys:/opt/keys
+      - ./initial_data/omejdn/keys/omejdn:/opt/keys/omejdn:ro
+      - ./initial_data/omejdn/keys/omejdn.cert:/opt/keys/omejdn.cert:ro
     network_mode: "host"
     restart: on-failure
 

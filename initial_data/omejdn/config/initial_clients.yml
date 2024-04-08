@@ -1,4 +1,4 @@
-- client_id: A0:0F:A3:85:60:52:95:BA:FA:70:B7:28:24:C1:99:8E:DD:7E:48:57:keyid:A0:0F:A3:85:60:52:95:BA:FA:70:B7:28:24:C1:99:8E:DD:7E:48:57
+- client_id: 20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3:keyid:20:1D:9C:04:0A:71:B9:E7:8C:28:9D:70:A6:84:43:59:2D:BA:E8:B3
   client_name: edc1
   grant_types: client_credentials
   token_endpoint_auth_method: private_key_jwt
@@ -15,8 +15,8 @@
   - key: "@context"
     value: https://w3id.org/idsa/contexts/context.jsonld
   - key: transportCertsSha256
-    value: 0a37e2386ff7f66481135d19dacc9345cd1a693d5bee56e2cf61083b7a087ed5
-- client_id: 5C:B8:7D:52:E2:D9:F2:FE:82:04:8F:8F:46:9A:9A:8F:B0:1B:08:CC:keyid:5C:B8:7D:52:E2:D9:F2:FE:82:04:8F:8F:46:9A:9A:8F:B0:1B:08:CC
+    value: b5c4cbece799557d1f62c5aa5c134eb13143346281d3de2b7a7cdef05f768666
+- client_id: 59:0B:DD:26:41:AC:57:D7:ED:76:D5:84:F8:BC:AC:8E:4C:C7:56:70:keyid:59:0B:DD:26:41:AC:57:D7:ED:76:D5:84:F8:BC:AC:8E:4C:C7:56:70
   client_name: edc2
   grant_types: client_credentials
   token_endpoint_auth_method: private_key_jwt
@@ -33,4 +33,4 @@
   - key: "@context"
     value: https://w3id.org/idsa/contexts/context.jsonld
   - key: transportCertsSha256
-    value: 4a1f1226aeab413fc9d4674c9935afd5527d7a98b240b9d31943e310658c674d
+    value: 6b438fe58f606efd1ba40cf3bf57af807b08a011dd15946c861c038b44bce0f2

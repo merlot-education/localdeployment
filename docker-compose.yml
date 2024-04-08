@@ -349,8 +349,12 @@ services:
     env_file: "secrets/edc_ionos_secrets.txt"
     volumes:
       - ./initial_data/edc/edc1.properties:/opt/dataspaceconnector-configuration.properties:ro
-      - ./initial_data/edc/vault.properties:/opt/vault.properties:ro
       - ./initial_data/edc/edc1.pfx:/opt/edc.pfx:ro
+    entrypoint: >
+      /bin/sh -c '
+      touch /opt/vault.properties;
+      java -jar /opt/connector.jar
+      '
     network_mode: "host"
 
   edc2:
@@ -363,8 +367,12 @@ services:
     env_file: "secrets/edc_ionos_secrets.txt"
     volumes:
       - ./initial_data/edc/edc2.properties:/opt/dataspaceconnector-configuration.properties:ro
-      - ./initial_data/edc/vault.properties:/opt/vault.properties:ro
       - ./initial_data/edc/edc2.pfx:/opt/edc.pfx:ro
+    entrypoint: >
+      /bin/sh -c '
+      touch /opt/vault.properties;
+      java -jar /opt/connector.jar
+      '
     network_mode: "host"
 
   nginx:
@@ -391,11 +399,11 @@ services:
       - ./initial_data/omejdn/plugins_config/plugins.yml:/opt/plugins_config/plugins.yml:ro
       - ./docker_data/omejdn/keys:/opt/keys
       - ./initial_data/omejdn/config/:/opt/initial_config/:ro
-      - ./initial_data/omejdn/keys/omejdn:/opt/keys/omejdn:ro
-      - ./initial_data/omejdn/keys/omejdn.cert:/opt/keys/omejdn.cert:ro
+      - ./initial_data/omejdn/keys/:/opt/initial_keys:ro
     entrypoint: >
       /bin/bash -c '
       cp -n /opt/initial_config/initial_clients.yml /opt/config/clients.yml;
+      cp -r -n /opt/initial_keys/* /opt/keys/;
       ruby omejdn.rb
       '
     network_mode: "host"

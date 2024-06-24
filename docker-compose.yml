@@ -85,7 +85,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:916d293
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:e86090a
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -95,8 +95,8 @@ services:
       GRAPHSTORE_URI: "${GRAPH_STORE_URI}"
       GRAPHSTORE_USER: "${GRAPH_STORE_USER}"
       GRAPHSTORE_PASSWORD: "${GRAPH_STORE_PASSWORD}"
-      FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
-      FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
+      #FEDERATEDCATALOGUE_VERIFICATION_PARTICIPANT_TYPE: http://w3id.org/gaia-x/core#Participant
+      #FEDERATEDCATALOGUE_VERIFICATION_SERVICEOFFERING_TYPE: http://w3id.org/gaia-x/core#ServiceOffering
       FEDERATEDCATALOGUE_VERIFICATION_SIGNATUREVERIFIER: local
       FEDERATEDCATALOGUE_VERIFICATION_TRUSTANCHORURL: ""
       FEDERATEDCATALOGUE_IGNORESSL: true
@@ -173,7 +173,7 @@ services:
   sd-creation-wizard-api:
     user: "${UID}:${GID}"
     container_name: "sd-creation-wizard-api"
-    image: ghcr.io/merlot-education/catalog-shapes/sd-creation-wizard-api:f3867b4
+    image: ghcr.io/merlot-education/catalog-shapes/sd-creation-wizard-api:e86090a
     networks:
       - "gaia-x"
     ports:

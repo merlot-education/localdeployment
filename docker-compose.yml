@@ -320,7 +320,7 @@ services:
   pdfservice:
     user: "${UID}:${GID}"
     container_name: "pdfservice"
-    image: ghcr.io/merlot-education/pdfservice:latest
+    image: ghcr.io/merlot-education/pdfservice:2.0.0
     networks:
       - "gaia-x"
     ports:

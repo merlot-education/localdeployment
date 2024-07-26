@@ -99,7 +99,7 @@ services:
   server:
     user: "${UID}:${GID}"
     container_name: "fc-server_merlot"
-    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:2.0.0
+    image: ghcr.io/merlot-education/catalog-shapes/gxfs-catalog:2.1.0
     environment:
       KEYCLOAK_CREDENTIALS_SECRET: "${FC_CLIENT_SECRET}"
       KEYCLOAK_AUTH-SERVER-URL: "${KEYCLOAK_AUTH_SERVER_URL}"
@@ -187,7 +187,7 @@ services:
   sd-creation-wizard-api:
     user: "${UID}:${GID}"
     container_name: "sd-creation-wizard-api"
-    image: ghcr.io/merlot-education/catalog-shapes/sd-creation-wizard-api:2.0.0
+    image: ghcr.io/merlot-education/catalog-shapes/sd-creation-wizard-api:2.1.0
     networks:
       - "gaia-x"
     ports:
@@ -334,7 +334,7 @@ services:
   pdfservice:
     user: "${UID}:${GID}"
     container_name: "pdfservice"
-    image: ghcr.io/merlot-education/pdfservice:2.0.0
+    image: ghcr.io/merlot-education/pdfservice:2.1.0
     networks:
       - "gaia-x"
     ports:
